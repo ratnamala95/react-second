@@ -33,16 +33,9 @@ class Board extends React.Component{
     }
 
     render(){
-        let status;
-        const winner  = calculateWinner(this.state.squares);
-        if(winner){
-            status = 'Winner '+ winner;
-        }else{
-            status = 'Next Player: '+(this.state.xIsNext?'X':'O');
-        }
         return(
             <div>
-                <div className='status'>{status}</div>
+                {/* <div className='status'>{this.state.status}</div> */}
                 <div className='board-row'>
                     {this.renderSquare(0)}
                     {this.renderSquare(1)}
@@ -99,6 +92,19 @@ class Game extends React.Component{
         const current = history[history.length - 1];
         const winner = calculateWinner(current.squares);
 
+        const moves = history.map((step,move)=>{
+            const desc = move ? 
+            'Go to move# '+move:
+            'Go to game start';
+// moves are not being changed in any way, not being moved, inserted in middle
+// or deleted from middle hencevthey hav unique ids and can be used as keys in li
+            return(
+                <li key={move}>
+                    <button onClick={()=>this.jumpTo(move)}>{desc}</button>
+                </li>
+            );
+        })
+
         let status;
 
         if(winner){
@@ -108,11 +114,17 @@ class Game extends React.Component{
         }
 
         return(
-            <div className='game'>
+            <div>
+                <div className='game'>
                 <Board 
                     squares = {current.squares}
                     onClick = {(i) => this.handleClick(i)}
                 />
+            </div>
+            <div className='game-info'>
+                <div>{status}</div>
+                <ol>{moves}</ol>
+            </div>
             </div>
         );
     }
